@@ -99,36 +99,33 @@ class Aplicacion:
 
             self.boton_eliminar_referencia = Button(self.ventana_referencias, text="Eliminar", command=self.eliminar_referencia)
             self.boton_eliminar_referencia.grid(row=1, column=2, pady=5, padx=5)
-                    # Se añade un botón para asignar un plano a una referencia.
-        self.boton_asignar_plano = Button(self.frame_referencias, text="Asignar plano", command=self.asignar_plano)
-        self.boton_asignar_plano.grid(row=4, column=3, padx=5, pady=5)
-
-        # Se añade un botón para abrir el plano asignado a una referencia.
-        self.boton_abrir_plano = Button(self.frame_referencias, text="Abrir plano", command=self.abrir_plano)
-        self.boton_abrir_plano.grid(row=4, column=4, padx=5, pady=5)
-
-        # Se añade un botón para imprimir el listado de artículos necesarios para la fabricación de una referencia.
-        self.boton_imprimir = Button(self.frame_referencias, text="Imprimir listado", command=self.imprimir)
-        self.boton_imprimir.grid(row=5, column=3, padx=5, pady=5)
-
-        # Se añade un botón para volver a la ventana de pedidos.
-        self.boton_volver_pedidos = Button(self.frame_referencias, text="Volver", command=self.volver_pedidos)
-        self.boton_volver_pedidos.grid(row=5, column=4, padx=5, pady=5)
+            self.boton_asignar_plano = Button(self.frame_referencias, text="Asignar plano", command=self.asignar_plano)
+            self.boton_asignar_plano.grid(row=4, column=3, padx=5, pady=5)
+ 
+            # Se añade un botón para abrir el plano asignado a una referencia.
+            self.boton_abrir_plano = Button(self.frame_referencias, text="Abrir plano", command=self.abrir_plano)
+            self.boton_abrir_plano.grid(row=4, column=4, padx=5, pady=5)
+            # Se añade un botón para imprimir el listado de artículos necesarios para la fabricación de una referencia.
+            self.boton_imprimir = Button(self.frame_referencias, text="Imprimir listado", command=self.imprimir)
+            self.boton_imprimir.grid(row=5, column=3, padx=5, pady=5)
+            # Se añade un botón para volver a la ventana de pedidos.
+            self.boton_volver_pedidos = Button(self.frame_referencias, text="Volver", command=self.volver_pedidos)
+            self.boton_volver_pedidos.grid(row=5, column=4, padx=5, pady=5)
 
     def crear_ficha_referencia(self):
-        # Se crea una ventana para la ficha de referencia.
-        self.ventana_ficha_referencia = Toplevel(self.ventana_principal)
-        self.ventana_ficha_referencia.title("Ficha de referencia")
-        self.ventana_ficha_referencia.geometry("500x400")
+        
+            self.ventana_ficha_referencia = Toplevel(self.ventana_principal)
+            self.ventana_ficha_referencia.title("Ficha de referencia")
+            self.ventana_ficha_referencia.geometry("500x400")
 
-        # Se crea un marco para los datos generales de la referencia.
-        self.frame_datos_referencia = Frame(self.ventana_ficha_referencia, padx=10, pady=10)
-        self.frame_datos_referencia.pack()
+            # Se crea un marco para los datos generales de la referencia.
+            self.frame_datos_referencia = Frame(self.ventana_ficha_referencia, padx=10, pady=10)
+            self.frame_datos_referencia.pack()
 
-        # Se añaden etiquetas y campos de texto para los datos generales de la referencia.
-        Label(self.frame_datos_referencia, text="Referencia:").grid(row=0, column=0, padx=5, pady=5)
-        self.campo_referencia = Entry(self.frame_datos_referencia)
-        self.campo_referencia.grid(row=0, column=1, padx=5, pady=5)
+            # Se añaden etiquetas y campos de texto para los datos generales de la referencia.
+            Label(self.frame_datos_referencia, text="Referencia:").grid(row=0, column=0, padx=5, pady=5)
+            self.campo_referencia = Entry(self.frame_datos_referencia)
+            self.campo_referencia.grid(row=0, column=1, padx=5, pady=5)
 
         Label(self.frame_datos_referencia, text="Fecha de entrega:").grid(row=1, column=0, padx=5, pady=5)
         self.campo_fecha_entrega = Entry(self.frame_datos_referencia)
@@ -345,4 +342,3 @@ app.main()
 
 
             
-
