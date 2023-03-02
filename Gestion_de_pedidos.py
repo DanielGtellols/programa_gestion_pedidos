@@ -239,42 +239,110 @@ def eliminar_referencia(self):
             self.tabla_referencias.delete(referencia)
 
     def guardar_cambios(self):
-        # Se actualizan los datos de la referencia.
-        self.referencia.fecha_entrega = self.campo_fecha_entrega.get()
-        self.referencia.estado = self.campo_estado.get()
-        self.referencia.comentario_incidencia = self.campo_comentario_incidencia.get("1.0", END)
+    # Se obtienen los nuevos datos de la referencia.
+    nueva_referencia = self.campo_referencia.get()
+    nueva_fecha_entrega = self.campo_fecha_entrega.get()
+    nuevo_estado = self.campo_estado.get()
+    nuevo_comentario_incidencia = self.campo_comentario_incidencia.get("1.0", END)
 
-        # Se actualizan los datos de la lista de pedidos en la ventana de pedidos.
-        for i, pedido in enumerate(self.pedidos):
-            if pedido.referencia == self.referencia:
-                self.pedidos[i] = self.referencia
+    # Se actualiza la referencia en la lista de pedidos.
+    for pedido in self.lista_pedidos:
+        if pedido["Referencia"] == self.referencia_actual:
+            pedido["Referencia"] = nueva_referencia
+            pedido["Fecha de entrega"] = nueva_fecha_entrega
+            pedido["Estado"] = nuevo_estado
+            pedido["Comentario de incidencia"] = nuevo_comentario_incidencia
 
-        # Se cierra la ventana de la ficha de referencia.
-        self.ventana_ficha_referencia.destroy()
+    # Se actualiza la lista de referencias en la interfaz.
+    self.actualizar_lista_referencias()
 
-    def asignar_plano(self):
-        # Se abre una ventana para seleccionar el archivo del plano.
-        archivo_plano = filedialog.askopenfilename()
+    # Se cierra la ventana de la ficha de referencia.
+    self.ventana_ficha_referencia.destroy()
 
-        # Se guarda la ruta del archivo en la referencia.
-        self.referencia.plano = archivo_plano
+def asignar_plano(self):
+    # Se abre una ventana para seleccionar un archivo de plano.
+    ruta_plano = filedialog.askopenfilename()
 
-    def abrir_plano(self):
-        # Se abre el archivo del plano en la aplicación por defecto.
-        if self.referencia.plano:
-            os.startfile(self.referencia.plano)
+    # Se actualiza la referencia en la lista de pedidos.
+    for pedido in self.lista_pedidos:
+        if pedido["Referencia"] == self.referencia_actual:
+            pedido["Plano"] = ruta_plano
 
-    def imprimir(self):
-        # Se imprime el listado de artículos necesarios para la fabricación de la referencia.
-        if self.referencia.articulos:
-            for articulo in self.referencia.articulos:
-                print(f"{articulo.cantidad} x {articulo.descripcion}")
-        else:
-            print("No hay artículos asociados a esta referencia.")
+    # Se actualiza la lista de referencias en la interfaz.
+    self.actualizar_lista_referencias()
 
-    def volver_pedidos(self):
-        # Se cierra la ventana de la ficha de referencia.
-        self.ventana_ficha_referencia.destroy()
+def abrir_plano(self):
+    # Se obtiene la ruta del plano asignado a la referencia actual.
+    for pedido in self.lista_pedidos:
+        if pedido["Referencia"] == self.referencia_actual:
+            ruta_plano = pedido["Plano"]
+            break
+
+    # Se abre el archivo de plano en el programa predeterminado del sistema operativo.
+    os.startfile(ruta_plano)
+
+def imprimir(self):
+    # Se obtiene la lista de artículos necesarios para la fabricación de la referencia actual.
+    for pedido in self.lista_pedidos:
+        if pedido["Referencia"] == self.referencia_actual:
+            articulos_necesarios = pedido["Artículos necesarios"]
+            break
+
+    # Se crea un archivo de texto con la lista de artículos necesarios.
+    with open("listado_articulos.txt", "w") as archivo:
+        archivo.write("Listado de artículos necesarios para la fabricación de la referencia:\n\n")
+        for articulo in articulos_necesarios:
+            archivo.write(f"{articulo['Cantidad']} x {articulo['Nombre']} ({articulo['Referencia']})\n")
+
+    # Se abre el archivo de texto en el programa predeterminado del sistema operativo.
+    os.startfile("listado_articulos.txt")
+
+def mostrar_comentario_incidencia(self, event):
+    # Se muestra o se oculta el campo de texto del comentario de incidencia según el estado seleccionado.
+    estado_actual = self.campo_estado.get()
+    if estado_actual == "Incidencia":
+        self.campo_comentario_incidencia.pack()
+        self.label_comentario_incidencia.pack()
+    else:
+        self.campo_comentario_incidencia.pack_forget()
+        self.label_comentario_incidencia.pack_forget()
+
+def main(self):
+    # Se crea la ventana principal de la aplicación.
+    self.ventana_principal = Tk()
+    self.ventana_principal.title("Gestión de pedidos")
+    self.ventana_principal.geometry("800x600")
+
+    # Se crea un marco para los botones de la
+        def main(self):
+        # Se crea la ventana principal de la aplicación.
+        self.ventana_principal = Tk()
+        self.ventana_principal.title("Gestión de pedidos")
+        self.ventana_principal.geometry("800x600")
+
+        # Se crea un marco para los botones de navegación.
+        self.frame_navegacion = Frame(self.ventana_principal, pady=10)
+        self.frame_navegacion.pack()
+
+        # Se añaden los botones de navegación.
+        self.boton_pedidos = Button(self.frame_navegacion, text="Pedidos", command=self.mostrar_pedidos)
+        self.boton_pedidos.pack(side="left", padx=10)
+
+        self.boton_referencias = Button(self.frame_navegacion, text="Referencias", command=self.mostrar_referencias)
+        self.boton_referencias.pack(side="left", padx=10)
+
+        # Se llama al método para mostrar la ventana de pedidos.
+        self.mostrar_pedidos()
+
+        # Se lanza el bucle principal de la aplicación.
+        self.ventana_principal.mainloop()
+
+
+# Se crea una instancia de la clase y se lanza la aplicación.
+app = GestionPedidos()
+app.main()
+
 
 
             
+
