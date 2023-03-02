@@ -1,444 +1,280 @@
 import tkinter as tk
 from tkinter import ttk
- 
-class PedidoGUI:
+from tkinter import messagebox
+import os
+from fpdf import FPDF
+
+class Aplicacion:
+
     def __init__(self):
-        self.root = tk.Tk()
-        self.root.title("Gestión de Pedidos")
-    
-        # Frame principal
-        main_frame = ttk.Frame(self.root, padding="30 15 30 15")
-        main_frame.grid(column=0, row=0, sticky=(tk.N, tk.W, tk.E, tk.S))
- 
-        # Label para el número de pedido
-        ttk.Label(main_frame, text="Número de Pedido").grid(column=0, row=0, sticky=tk.W)
-        self.num_pedido_entry = ttk.Entry(main_frame, width=20)
-        self.num_pedido_entry.grid(column=1, row=0, sticky=tk.W)
-    
-        # Label para el cliente
-        ttk.Label(main_frame, text="Cliente").grid(column=0, row=1, sticky=tk.W)
-        self.cliente_entry = ttk.Entry(main_frame, width=20)
-        self.cliente_entry.grid(column=1, row=1, sticky=tk.W)
- 
-        # Label para la fecha de recepción
-        ttk.Label(main_frame, text="Fecha de Recepción").grid(column=0, row=2, sticky=tk.W)
-        self.fecha_recepcion_entry = ttk.Entry(main_frame, width=20)
-        self.fecha_recepcion_entry.grid(column=1, row=2, sticky=tk.W)
-    
-        # Botón para añadir un nuevo pedido
-        ttk.Button(main_frame, text="Añadir Pedido", command=self.add_pedido).grid(column=1, row=3, sticky=tk.W)
- 
-        # Treeview para listar los pedidos existentes
-        self.tree = ttk.Treeview(main_frame, columns=("num_pedido", "cliente", "fecha_recepcion"), selectmode="browse")
-        self.tree.column("#0", width=0, stretch=tk.NO)
-        self.tree.column("num_pedido", anchor=tk.CENTER, width=120)
-        self.tree.column("cliente", anchor=tk.CENTER, width=120)
-        self.tree.column("fecha_recepcion", anchor=tk.CENTER, width=120)
-        self.tree.heading("num_pedido", text="Número de Pedido")
-        self.tree.heading("cliente", text="Cliente")
-        self.tree.heading("fecha_recepcion", text="Fecha de Recepción")
-        self.tree.grid(column=0, row=4, columnspan=2, sticky=(tk.N, tk.W, tk.E, tk.S))
-        self.tree.bind("<Double-1>", self.show_pedido)
 
-        # Botón para editar un pedido seleccionado
-        ttk.Button(main_frame, text="Editar Pedido", command=self.edit_pedido).grid(column=0, row=5, sticky=tk.W)
+        self.ventana_principal = tk.Tk()
+        self.ventana_principal.title("Gestión de pedidos y fabricación")
+        self.cargar_base_de_datos()
+        self.cargar_interfaz_grafica()
 
-        # Botón para eliminar un pedido seleccionado
-        ttk.Button(main_frame, text="Eliminar Pedido", command=self.delete_pedido).grid(column=1, row=5, sticky=tk.W)
+    def cargar_base_de_datos(self):
 
-        self.root.mainloop()
+        # En este método se cargaría la base de datos, si es que la hubiera.
+        # Por simplicidad, para este ejemplo, usaremos una lista en memoria.
+        self.pedidos = [
+            {"numero": "001", "cliente": "Cliente 1", "fecha": "01/01/2022"},
+            {"numero": "002", "cliente": "Cliente 2", "fecha": "02/01/2022"},
+            {"numero": "003", "cliente": "Cliente 3", "fecha": "03/01/2022"}
+        ]
 
-    def add_pedido(self):
-        pass
+    def cargar_interfaz_grafica(self):
 
-    def edit_pedido(self):
-        pass
+        # Aquí se define la interfaz gráfica con sus widgets.
+        # Por simplicidad, en este ejemplo sólo creamos la ventana principal y un botón de "Listar pedidos".
+        self.boton_listar_pedidos = ttk.Button(self.ventana_principal, text="Listar pedidos", command=self.listar_pedidos)
+        self.boton_listar_pedidos.pack()
 
-    def delete_pedido(self):
-        pass
+        # Se inicia el bucle principal de la aplicación.
+        self.ventana_principal.mainloop()
+    def listar_pedidos(self):
 
-    def show_pedido(self, event):
-        pass
+        # Crea una ventana secundaria para listar los pedidos.
+        self.ventana_listado_pedidos = tk.Toplevel(self.ventana_principal)
+        self.ventana_listado_pedidos.title("Listado de pedidos")
 
-  if __name__ == '__main__':
-    app = PedidoGUI()
+        # Se crea un Treeview para mostrar la información de los pedidos.
+        self.treeview_pedidos = ttk.Treeview(self.ventana_listado_pedidos)
+        self.treeview_pedidos["columns"] = ("cliente", "fecha")
+        self.treeview_pedidos.heading("#0", text="Número de pedido")
+        self.treeview_pedidos.column("cliente", width=150)
+        self.treeview_pedidos.heading("cliente", text="Cliente")
+        self.treeview_pedidos.column("fecha", width=100)
+        self.treeview_pedidos.heading("fecha", text="Fecha de recepción")
+        self.treeview_pedidos.pack()
 
-cclass RefsPedidoWindow(QtWidgets.QWidget):
-    def __init__(self, pedido):
-        super().__init__()
-        self.pedido = pedido
-        self.setWindowTitle("Referencias del Pedido")
-        self.setGeometry(100, 100, 600, 400)
+        # Se rellena el Treeview con la información de los pedidos.
+        for pedido in self.pedidos:
+            self.treeview_pedidos.insert("", "end", text=pedido["numero"], values=(pedido["cliente"], pedido["fecha"]))
 
-SyntaxError: multiple statements found while compiling a single statement
-    # Crear tabla de referencias
-    self.table_refs = QtWidgets.QTableWidget(self)
-    self.table_refs.setRowCount(len(self.pedido.referencias))
-    self.table_refs.setColumnCount(3)
-    self.table_refs.setHorizontalHeaderLabels(['Referencia', 'Fecha de Entrega', 'Estado'])
+        # Se añaden botones para editar, añadir y borrar pedidos.
+        self.boton_editar_pedido = Button(self.ventana_pedidos, text="Editar", command=self.editar_pedido)
+        self.boton_editar_pedido.grid(row=5, column=2, pady=5, padx=5)
 
-    # Rellenar tabla de referencias
-    for i, ref in enumerate(self.pedido.referencias):
-        self.table_refs.setItem(i, 0, QtWidgets.QTableWidgetItem(ref.referencia))
-        self.table_refs.setItem(i, 1, QtWidgets.QTableWidgetItem(ref.fecha_entrega))
-        self.table_refs.setItem(i, 2, QtWidgets.QTableWidgetItem(ref.estado))
+        self.boton_anadir_pedido = Button(self.ventana_pedidos, text="Añadir", command=self.anadir_pedido)
+        self.boton_anadir_pedido.grid(row=5, column=3, pady=5, padx=5)
 
-    # Añadir botones
-    self.button_add_ref = QtWidgets.QPushButton('Añadir Referencia')
-    self.button_edit_ref = QtWidgets.QPushButton('Editar Referencia')
-    self.button_delete_ref = QtWidgets.QPushButton('Borrar Referencia')
-    self.button_back = QtWidgets.QPushButton('Volver al Pedido')
+        self.boton_eliminar_pedido = Button(self.ventana_pedidos, text="Eliminar", command=self.eliminar_pedido)
+        self.boton_eliminar_pedido.grid(row=5, column=4, pady=5, padx=5)
 
-    # Añadir layout
-    layout = QtWidgets.QVBoxLayout(self)
-    layout.addWidget(self.table_refs)
-    layout.addWidget(self.button_add_ref)
-    layout.addWidget(self.button_edit_ref)
-    layout.addWidget(self.button_delete_ref)
-    layout.addWidget(self.button_back)
+        # Se añade un botón para abrir la ventana de referencias.
+        self.boton_referencias_pedido = Button(self.ventana_pedidos, text="Ver referencias", command=self.ver_referencias_pedido)
+        self.boton_referencias_pedido.grid(row=6, column=3, pady=5, padx=5)
 
-    # Conectar botones a funciones
-    self.button_add_ref.clicked.connect(self.add_ref)
-    self.button_edit_ref.clicked.connect(self.edit_ref)
-    self.button_delete_ref.clicked.connect(self.delete_ref)
-    self.button_back.clicked.connect(self.back_to_pedido)
-
-def add_ref(self):
-    # Abrir ventana para añadir referencia
-    ref_window = AddRefWindow(self.pedido)
-    ref_window.exec_()
-    # Refrescar tabla de referencias
-    self.refresh_table_refs()
-
-def edit_ref(self):
-    # Obtener referencia seleccionada
-    selected_refs = self.table_refs.selectedIndexes()
-    if len(selected_refs) == 0:
-        return
-    ref_index = selected_refs[0].row()
-    ref = self.pedido.referencias[ref_index]
-    # Abrir ventana para editar referencia
-    ref_window = EditRefWindow(ref)
-    ref_window.exec_()
-    # Refrescar tabla de referencias
-    self.refresh_table_refs()
-
-def delete_ref(self):
-    # Obtener referencia seleccionada
-    selected_refs = self.table_refs.selectedIndexes()
-    if len(selected_refs) == 0:
-        return
-    ref_index = selected_refs[0].row()
-    # Eliminar referencia del pedido
-    self.pedido.eliminar_referencia(ref_index)
-    # Refrescar tabla de referencias
-    self.refresh_table_refs()
-
-def refresh_table_refs(self):
-    # Refrescar tabla de referencias
-    self.table_refs.setRowCount(len(self.pedido.referencias))
-    for i, ref in enumerate(self.pedido.referencias):
-        self.table_refs.setItem(i, 0, QtWidgets.QTableWidgetItem(ref.referencia))
-        self.table_refs.setItem(i, 1, QtWidgets.QTableWidgetItem(ref.fecha_entrega))
-        self.table_refs.setItem(i, 2, QtWidgets.QTableWidgetItem(ref.estado))
-
-def back_to_pedido(self):
-    # Volver a ventana de pedido
-    self.close()
-    self.parent().show()
-class Referencia:
-    def __init__(self, referencia, fecha_entrega, estado, comentario):
-        self.referencia = referencia
-        self.fecha_entrega = fecha_entrega
-        self.estado = estado
-        self.comentario = comentario
-        self.articulos = []
-
-    def agregar_articulo(self, articulo):
-        self.articulos.append(articulo)
-
-    def eliminar_articulo(self, articulo):
-        self.articulos.remove(articulo)
-
-    def editar_articulo(self, articulo, cantidad, referencia, descripcion, comentario):
-        articulo.cantidad = cantidad
-        articulo.referencia = referencia
-        articulo.descripcion = descripcion
-        articulo.comentario = comentario
-
-class Articulo:
-    def __init__(self, cantidad, referencia, descripcion, comentario):
-        self.cantidad = cantidad
-        self.referencia = referencia
-        self.descripcion = descripcion
-        self.comentario = comentario
-
-class ReferenciaFicha(QWidget):
-    def __init__(self, referencia):
-        super().__init__()
-        self.referencia = referencia
-        self.initUI()
-
-    def initUI(self):
-        # Crear la tabla de artículos
-        self.tabla = QTableWidget()
-        self.tabla.setColumnCount(4)
-        self.tabla.setHorizontalHeaderLabels(["Cantidad", "Referencia", "Descripción", "Comentario"])
-        self.tabla.setRowCount(len(self.referencia.articulos))
-
-        # Llenar la tabla de artículos
-        for i, articulo in enumerate(self.referencia.articulos):
-            cantidad = QTableWidgetItem(str(articulo.cantidad))
-            referencia = QTableWidgetItem(articulo.referencia)
-            descripcion = QTableWidgetItem(articulo.descripcion)
-            comentario = QTableWidgetItem(articulo.comentario)
-
-            self.tabla.setItem(i, 0, cantidad)
-            self.tabla.setItem(i, 1, referencia)
-            self.tabla.setItem(i, 2, descripcion)
-            self.tabla.setItem(i, 3, comentario)
-
-        # Crear los botones de agregar, eliminar y editar
-        btn_agregar = QPushButton("Agregar")
-        btn_eliminar = QPushButton("Eliminar")
-        btn_editar = QPushButton("Editar")
-
-        # Agregar los botones a un layout
-        layout_botones = QHBoxLayout()
-        layout_botones.addWidget(btn_agregar)
-        layout_botones.addWidget(btn_eliminar)
-        layout_botones.addWidget(btn_editar)
-
-        # Crear el layout principal
-        layout_principal = QVBoxLayout()
-        layout_principal.addWidget(self.tabla)
-        layout_principal.addLayout(layout_botones)
-
-        # Establecer el layout principal
-        self.setLayout(layout_principal)
-
-        # Conectar las señales de los botones a sus respectivas funciones
-        btn_agregar.clicked.connect(self.agregar_articulo)
-        btn_eliminar.clicked.connect(self.eliminar_articulo)
-        btn_editar.clicked.connect(self.editar_articulo)
-
-    def agregar_articulo(self):
-    # Obtener la referencia seleccionada
-    ref_sel = self.list_ref.get(self.list_ref.curselection())
-
-    # Crear ventana para agregar un nuevo artículo
-    win_agregar_art = Toplevel()
-    win_agregar_art.title("Agregar artículo")
-
-    # Campos para introducir los datos del artículo
-    lbl_ref = Label(win_agregar_art, text="Referencia:")
-    lbl_ref.grid(row=0, column=0, padx=5, pady=5)
-    lbl_ref_val = Label(win_agregar_art, text=ref_sel)
-    lbl_ref_val.grid(row=0, column=1, padx=5, pady=5)
-
-    lbl_cant = Label(win_agregar_art, text="Cantidad:")
-    lbl_cant.grid(row=1, column=0, padx=5, pady=5)
-    ent_cant = Entry(win_agregar_art)
-    ent_cant.grid(row=1, column=1, padx=5, pady=5)
-
-    lbl_desc = Label(win_agregar_art, text="Descripción:")
-    lbl_desc.grid(row=2, column=0, padx=5, pady=5)
-    ent_desc = Entry(win_agregar_art)
-    ent_desc.grid(row=2, column=1, padx=5, pady=5)
-
-    lbl_com = Label(win_agregar_art, text="Comentario:")
-    lbl_com.grid(row=3, column=0, padx=5, pady=5)
-    ent_com = Entry(win_agregar_art)
-    ent_com.grid(row=3, column=1, padx=5, pady=5)
-
-    # Función para agregar el artículo
-    def agregar():
-        # Obtener los datos del artículo
-        cant = ent_cant.get()
-        desc = ent_desc.get()
-        com = ent_com.get()
-
-        # Validar que se introduzca la cantidad
-        if not cant:
-            messagebox.showerror("Error", "Debe introducir la cantidad.")
-            return
-
-        # Validar que la cantidad sea un número entero
+    def ver_referencias_pedido(self):
+        """
+        Abre la ventana de referencias del pedido seleccionado.
+        """
         try:
-            cant = int(cant)
-        except ValueError:
-            messagebox.showerror("Error", "La cantidad debe ser un número entero.")
-            return
+            self.tree_pedidos.focus()  # Enfoca el Treeview de pedidos.
+            # Obtiene el número de pedido seleccionado.
+            numero_pedido = int(self.tree_pedidos.item(self.tree_pedidos.selection())['text'])
+            self.ventana_referencias = Toplevel()
+            self.ventana_referencias.title("Referencias del pedido " + str(numero_pedido))
+            self.ventana_referencias.geometry("800x400")
 
-        # Validar que la cantidad sea mayor a cero
-        if cant <= 0:
-            messagebox.showerror("Error", "La cantidad debe ser mayor a cero.")
-            return
+            # Se crea un Treeview para mostrar las referencias del pedido.
+            self.tree_referencias = ttk.Treeview(self.ventana_referencias, columns=("referencia", "fecha_entrega", "estado"), selectmode="browse")
+            self.tree_referencias.heading("#0", text="ID")
+            self.tree_referencias.heading("referencia", text="Referencia")
+            self.tree_referencias.heading("fecha_entrega", text="Fecha de entrega")
+            self.tree_referencias.heading("estado", text="Estado")
+            self.tree_referencias.column("#0", width=50)
+            self.tree_referencias.column("referencia", width=150)
+            self.tree_referencias.column("fecha_entrega", width=150)
+            self.tree_referencias.column("estado", width=150)
+            self.tree_referencias.pack(pady=5)
 
-        # Agregar el artículo a la lista de artículos
-        articulo = (ref_sel, cant, desc, com)
-        self.list_art.append(articulo)
+            # Se agregan los botones para editar, añadir y borrar referencias.
+            self.boton_editar_referencia = Button(self.ventana_referencias, text="Editar", command=self.editar_referencia)
+            self.boton_editar_referencia.grid(row=1, column=0, pady=5, padx=5)
 
-        # Actualizar la lista de artículos
-        self.listbox.delete(0, END)
-        for articulo in self.list_art:
-            self.listbox.insert(END, articulo)
+            self.boton_anadir_referencia = Button(self.ventana_referencias, text="Añadir", command=self.anadir_referencia)
+            self.boton_anadir_referencia.grid(row=1, column=1, pady=5, padx=5)
 
-        # Cerrar la ventana de agregar artículo
-        win_agregar_art.destroy()
+            self.boton_eliminar_referencia = Button(self.ventana_referencias, text="Eliminar", command=self.eliminar_referencia)
+            self.boton_eliminar_referencia.grid(row=1, column=2, pady=5, padx=5)
+                    # Se añade un botón para asignar un plano a una referencia.
+        self.boton_asignar_plano = Button(self.frame_referencias, text="Asignar plano", command=self.asignar_plano)
+        self.boton_asignar_plano.grid(row=4, column=3, padx=5, pady=5)
 
-    # Botón para agregar el artículo
-    btn_agregar = Button(win_agregar_art, text="Agregar", command=agregar)
-    btn_agregar.grid(row=4, column=0, padx=5, pady=5, columnspan=2)
-class FichaReferencia(tk.Toplevel):
-    def __init__(self, referencia):
-        super().__init__()
-        self.referencia = referencia
-        self.articulos = []
-        self.plano = None
-        self.geometry("500x500")
-        self.title(f"Ficha de referencia {self.referencia}")
-        tk.Label(self, text=f"Referencia: {self.referencia}").pack()
-        tk.Button(self, text="Agregar artículo", command=self.agregar_articulo).pack()
-        tk.Button(self, text="Eliminar artículo", command=self.eliminar_articulo).pack()
-        tk.Button(self, text="Editar artículo", command=self.editar_articulo).pack()
-        tk.Label(self, text="Artículos:").pack()
-        self.articulos_listbox = tk.Listbox(self, height=10, width=50)
-        self.articulos_listbox.pack()
-        tk.Button(self, text="Asignar plano", command=self.asignar_plano).pack()
-        tk.Button(self, text="Abrir plano", command=self.abrir_plano).pack()
-        tk.Button(self, text="Imprimir listado de artículos", command=self.imprimir_listado).pack()
-        self.actualizar_articulos()
-        self.protocol("WM_DELETE_WINDOW", self.cerrar)
+        # Se añade un botón para abrir el plano asignado a una referencia.
+        self.boton_abrir_plano = Button(self.frame_referencias, text="Abrir plano", command=self.abrir_plano)
+        self.boton_abrir_plano.grid(row=4, column=4, padx=5, pady=5)
 
-    def agregar_articulo(self):
-        ventana_agregar_articulo = VentanaAgregarArticulo(self)
-        self.wait_window(ventana_agregar_articulo)
-        if ventana_agregar_articulo.articulo is not None:
-            self.articulos.append(ventana_agregar_articulo.articulo)
-            self.actualizar_articulos()
+        # Se añade un botón para imprimir el listado de artículos necesarios para la fabricación de una referencia.
+        self.boton_imprimir = Button(self.frame_referencias, text="Imprimir listado", command=self.imprimir)
+        self.boton_imprimir.grid(row=5, column=3, padx=5, pady=5)
 
-    def eliminar_articulo(self):
-        seleccion = self.articulos_listbox.curselection()
-        if len(seleccion) == 1:
-            self.articulos.pop(seleccion[0])
-            self.actualizar_articulos()
+        # Se añade un botón para volver a la ventana de pedidos.
+        self.boton_volver_pedidos = Button(self.frame_referencias, text="Volver", command=self.volver_pedidos)
+        self.boton_volver_pedidos.grid(row=5, column=4, padx=5, pady=5)
 
-    def editar_articulo(self):
-        seleccion = self.articulos_listbox.curselection()
-        if len(seleccion) == 1:
-            ventana_editar_articulo = VentanaEditarArticulo(self, self.articulos[seleccion[0]])
-            self.wait_window(ventana_editar_articulo)
-            if ventana_editar_articulo.articulo is not None:
-                self.articulos[seleccion[0]] = ventana_editar_articulo.articulo
-                self.actualizar_articulos()
+    def crear_ficha_referencia(self):
+        # Se crea una ventana para la ficha de referencia.
+        self.ventana_ficha_referencia = Toplevel(self.ventana_principal)
+        self.ventana_ficha_referencia.title("Ficha de referencia")
+        self.ventana_ficha_referencia.geometry("500x400")
 
-    def actualizar_articulos(self):
-        self.articulos_listbox.delete(0, tk.END)
-        for articulo in self.articulos:
-            self.articulos_listbox.insert(tk.END, f"{articulo.cantidad} x {articulo.referencia} ({articulo.descripcion})")
+        # Se crea un marco para los datos generales de la referencia.
+        self.frame_datos_referencia = Frame(self.ventana_ficha_referencia, padx=10, pady=10)
+        self.frame_datos_referencia.pack()
+
+        # Se añaden etiquetas y campos de texto para los datos generales de la referencia.
+        Label(self.frame_datos_referencia, text="Referencia:").grid(row=0, column=0, padx=5, pady=5)
+        self.campo_referencia = Entry(self.frame_datos_referencia)
+        self.campo_referencia.grid(row=0, column=1, padx=5, pady=5)
+
+        Label(self.frame_datos_referencia, text="Fecha de entrega:").grid(row=1, column=0, padx=5, pady=5)
+        self.campo_fecha_entrega = Entry(self.frame_datos_referencia)
+        self.campo_fecha_entrega.grid(row=1, column=1, padx=5, pady=5)
+
+        Label(self.frame_datos_referencia, text="Estado:").grid(row=2, column=0, padx=5, pady=5)
+        self.opciones_estado = ["Entregado", "En fabricación", "Pedido", "Incidencia"]
+        self.campo_estado = ttk.Combobox(self.frame_datos_referencia, values=self.opciones_estado)
+        self.campo_estado.grid(row=2, column=1, padx=5, pady=5)
+
+        self.campo_estado.bind("<<ComboboxSelected>>", self.mostrar_comentario_incidencia)
+
+        self.label_comentario_incidencia = Label(self.frame_datos_referencia, text="Comentario de incidencia:")
+        self.label_comentario_incidencia.grid(row=3, column=0, padx=5, pady=5)
+
+            # Se crea un campo de texto para el comentario de incidencia.
+    self.campo_comentario_incidencia = Text(self.frame_datos_referencia, height=5)
+    self.campo_comentario_incidencia.grid(row=3, column=1, padx=5, pady=5)
+
+    # Se añade un botón para guardar los cambios en la ficha de referencia.
+    self.boton_guardar_cambios = Button(self.ventana_ficha_referencia, text="Guardar cambios", command=self.guardar_cambios_referencia)
+    self.boton_guardar_cambios.pack(padx=10, pady=10)
+
+def mostrar_comentario_incidencia(self, event):
+    # Se muestra el campo de texto del comentario de incidencia si el estado de la referencia es "Incidencia".
+    if self.campo_estado.get() == "Incidencia":
+        self.label_comentario_incidencia.grid(row=3, column=0, padx=5, pady=5)
+        self.campo_comentario_incidencia.grid(row=3, column=1, padx=5, pady=5)
+    else:
+        self.label_comentario_incidencia.grid_forget()
+        self.campo_comentario_incidencia.grid_forget()
+
+def asignar_plano(self):
+    # Se abre un cuadro de diálogo para seleccionar un archivo de plano y se guarda la ruta en la variable self.ruta_plano.
+    self.ruta_plano = filedialog.askopenfilename(initialdir="/", title="Seleccionar archivo de plano", filetypes=[("Archivos de plano", "*.pdf")])
+    if self.ruta_plano:
+        messagebox.showinfo("Plano asignado", "Se ha asignado un plano a la referencia.")
+
+def abrir_plano(self):
+    # Se abre el archivo de plano asignado a la referencia.
+    if self.ruta_plano:
+        os.startfile(self.ruta_plano)
+    else:
+        messagebox.showwarning("Sin plano asignado", "No se ha asignado ningún plano a la referencia.")
+
+def imprimir(self):
+    # Se imprime el listado de artículos necesarios para la fabricación de la referencia.
+    pass
+
+def volver_pedidos(self):
+    # Se destruye la ventana de la ficha de referencia y se vuelve a la ventana de pedidos.
+    self.ventana_ficha_referencia.destroy()
+
+    # Se borran los datos de la tabla de referencias.
+    self.borrar_tabla_referencias()
+
+    # Se cargan los pedidos en la tabla de pedidos.
+    self.cargar_pedidos()
+
+def asignar_plano(self):
+    # Se abre una ventana de selección de archivo.
+    archivo = filedialog.askopenfilename(title="Seleccionar plano", filetypes=[("Archivos PDF", "*.pdf")])
+
+    # Se muestra el nombre del archivo seleccionado.
+    self.label_nombre_archivo.config(text=os.path.basename(archivo))
+
+def abrir_plano(self):
+    # Se obtiene la ruta del archivo seleccionado.
+    archivo = os.path.join(os.getcwd(), "planos", self.label_nombre_archivo.cget("text"))
+
+    # Se comprueba si el archivo existe.
+    if os.path.isfile(archivo):
+        # Se abre el archivo con el programa por defecto.
+        os.startfile(archivo)
+    else:
+        messagebox.showwarning("Archivo no encontrado", "El archivo seleccionado no se encuentra en la carpeta de planos.")
+
+def imprimir(self):
+    # Se muestra un mensaje de confirmación.
+    respuesta = messagebox.askyesno("Imprimir listado", "¿Desea imprimir el listado de artículos necesarios para la fabricación de la referencia?")
+
+    if respuesta == True:
+        # Se abre el archivo con el programa por defecto.
+        os.startfile("listado.pdf")
+
+def mostrar_comentario_incidencia(self, event):
+    # Se comprueba si el estado seleccionado es incidencia.
+    if self.campo_estado.get() == "Incidencia":
+        self.campo_comentario_incidencia = Entry(self.frame_datos_referencia)
+        self.campo_comentario_incidencia.grid(row=3, column=1, padx=5, pady=5)
+    else:
+        self.campo_comentario_incidencia.destroy()
+        self.label_comentario_incidencia.grid(row=3, column=0, padx=5, pady=5)
+
+def eliminar_referencia(self):
+    # Se obtiene la referencia seleccionada.
+    referencia = self.tabla_referencias.selection()
+
+    # Se comprueba si se ha seleccionado una referencia.
+    if len(referencia) == 0:
+        messagebox.showwarning("Eliminar referencia", "Debe seleccionar una referencia para eliminar.")
+    else:
+        # Se muestra un mensaje de confirmación.
+        respuesta = messagebox.askyesno("Eliminar referencia", "¿Está seguro de que desea eliminar la referencia seleccionada?")
+
+        if respuesta == True:
+            # Se elimina la referencia de la tabla de referencias.
+            self.tabla_referencias.delete(referencia)
+
+    def guardar_cambios(self):
+        # Se actualizan los datos de la referencia.
+        self.referencia.fecha_entrega = self.campo_fecha_entrega.get()
+        self.referencia.estado = self.campo_estado.get()
+        self.referencia.comentario_incidencia = self.campo_comentario_incidencia.get("1.0", END)
+
+        # Se actualizan los datos de la lista de pedidos en la ventana de pedidos.
+        for i, pedido in enumerate(self.pedidos):
+            if pedido.referencia == self.referencia:
+                self.pedidos[i] = self.referencia
+
+        # Se cierra la ventana de la ficha de referencia.
+        self.ventana_ficha_referencia.destroy()
 
     def asignar_plano(self):
-        fichero_plano = filedialog.askopenfilename(title="Seleccione el plano", filetypes=[("PDF", "*.pdf")])
-        if fichero_plano != "":
-            self.plano = fichero_plano
+        # Se abre una ventana para seleccionar el archivo del plano.
+        archivo_plano = filedialog.askopenfilename()
+
+        # Se guarda la ruta del archivo en la referencia.
+        self.referencia.plano = archivo_plano
 
     def abrir_plano(self):
-        if self.plano is not None:
-            os.startfile(self.plano)
+        # Se abre el archivo del plano en la aplicación por defecto.
+        if self.referencia.plano:
+            os.startfile(self.referencia.plano)
 
-    def imprimir_listado(self):
-        listado = f"Listado de artículos necesarios para la referencia {self.referencia}:\n\n"
-        for articulo in self.articulos:
-            listado += f"{articulo.cantidad} x {articulo.referencia} ({articulo.descripcion})\n"
-        print(listado)
-
-    def cerrar(self):
-        self.destroy()
-class ReferenciaVentana(QtWidgets.QWidget):
-    def __init__(self, referencia):
-        super().__init__()
-        self.referencia = referencia
-        self.articulos = self.referencia.articulos
-        self.initUI()
-
-    def initUI(self):
-        self.setGeometry(100, 100, 500, 500)
-        self.setWindowTitle(f"Ficha de referencia: {self.referencia.nombre}")
-        self.layout = QtWidgets.QVBoxLayout(self)
-
-        # Tabla de artículos
-        self.tabla_articulos = QtWidgets.QTableWidget(self)
-        self.tabla_articulos.setColumnCount(4)
-        self.tabla_articulos.setHorizontalHeaderLabels(["Cantidad", "Referencia", "Descripción", "Comentario"])
-        self.tabla_articulos.setRowCount(len(self.articulos))
-        for i, articulo in enumerate(self.articulos):
-            cantidad = QtWidgets.QTableWidgetItem(str(articulo.cantidad))
-            referencia = QtWidgets.QTableWidgetItem(articulo.referencia)
-            descripcion = QtWidgets.QTableWidgetItem(articulo.descripcion)
-            comentario = QtWidgets.QTableWidgetItem(articulo.comentario)
-            self.tabla_articulos.setItem(i, 0, cantidad)
-            self.tabla_articulos.setItem(i, 1, referencia)
-            self.tabla_articulos.setItem(i, 2, descripcion)
-            self.tabla_articulos.setItem(i, 3, comentario)
-        self.tabla_articulos.horizontalHeader().setSectionResizeMode(QtWidgets.QHeaderView.Stretch)
-        self.tabla_articulos.verticalHeader().setSectionResizeMode(QtWidgets.QHeaderView.ResizeToContents)
-        self.layout.addWidget(self.tabla_articulos)
-
-        # Botones de acción
-        self.layout_botones = QtWidgets.QHBoxLayout()
-        self.boton_agregar = QtWidgets.QPushButton("Agregar artículo")
-        self.boton_agregar.clicked.connect(self.agregar_articulo)
-        self.boton_eliminar = QtWidgets.QPushButton("Eliminar artículo")
-        self.boton_eliminar.clicked.connect(self.eliminar_articulo)
-        self.layout_botones.addWidget(self.boton_agregar)
-        self.layout_botones.addWidget(self.boton_eliminar)
-        self.layout.addLayout(self.layout_botones)
-
-    def agregar_articulo(self):
-        dialogo = ArticuloDialogo(self)
-        if dialogo.exec_() == QtWidgets.QDialog.Accepted:
-            articulo = dialogo.articulo
-            self.referencia.agregar_articulo(articulo)
-            self.articulos = self.referencia.articulos
-            self.actualizar_tabla_articulos()
-
-    def eliminar_articulo(self):
-        indices = [index.row() for index in self.tabla_articulos.selectedIndexes()]
-        indices.sort(reverse=True)
-        for indice in indices:
-            self.referencia.eliminar_articulo(indice)
-        self.articulos = self.referencia.articulos
-        self.actualizar_tabla_articulos()
-
-    def actualizar_tabla_articulos(self):
-        # Limpiar la tabla
-        self.tabla_articulos.clearContents()
-
-        # Obtener la referencia seleccionada en la tabla de referencias
-        fila_referencia = self.tabla_referencias.currentRow()
-        referencia_seleccionada = self.tabla_referencias.item(fila_referencia, 0).text()
-
-        # Obtener la lista de artículos de la referencia seleccionada
-        if referencia_seleccionada in self.pedidos[self.pedido_seleccionado]['referencias']:
-            lista_articulos = self.pedidos[self.pedido_seleccionado]['referencias'][referencia_seleccionada]['articulos']
+    def imprimir(self):
+        # Se imprime el listado de artículos necesarios para la fabricación de la referencia.
+        if self.referencia.articulos:
+            for articulo in self.referencia.articulos:
+                print(f"{articulo.cantidad} x {articulo.descripcion}")
         else:
-            lista_articulos = []
+            print("No hay artículos asociados a esta referencia.")
 
-        # Establecer el número de filas de la tabla
-        self.tabla_articulos.setRowCount(len(lista_articulos))
+    def volver_pedidos(self):
+        # Se cierra la ventana de la ficha de referencia.
+        self.ventana_ficha_referencia.destroy()
 
-        # Llenar la tabla con los datos de los artículos
-        for i, articulo in enumerate(lista_articulos):
-            # Crear celdas para cada campo del artículo
-            cantidad = QtWidgets.QTableWidgetItem(str(articulo['cantidad']))
-            referencia = QtWidgets.QTableWidgetItem(articulo['referencia'])
-            descripcion = QtWidgets.QTableWidgetItem(articulo['descripcion'])
-            comentario = QtWidgets.QTableWidgetItem(articulo['comentario'])
 
-            # Agregar las celdas a la tabla
-            self.tabla_articulos.setItem(i, 0, cantidad)
-            self.tabla_articulos.setItem(i, 1, referencia)
-            self.tabla_articulos.setItem(i, 2, descripcion)
-            self.tabla_articulos.setItem(i, 3, comentario)
-
+            
