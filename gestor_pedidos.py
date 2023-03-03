@@ -72,6 +72,7 @@ class ProgramaGestionPedidos:
         self.tabla_pedidos.heading("nombre", text="Nombre")
         self.tabla_pedidos.column("fecha_entrega", anchor=CENTER, width=100)
         self.tabla_pedidos.heading("fecha_entrega", text="Fecha de entrega")
+        self.nuevo_pedido(producto, cantidad)
         self.tabla_pedidos.column("cantidad", anchor=CENTER, width=100)
         self.tabla_pedidos.heading("cantidad", text="Cantidad")
         self.tabla_pedidos.bind("<Double-1>", self.editar_pedido)
@@ -97,12 +98,11 @@ class ProgramaGestionPedidos:
         for id_pedido, pedido in self.pedidos.items():
             referencia, nombre, fecha_entrega, cantidad = pedido
             self.tabla_pedidos.insert("", END, text=id_pedido, values=(referencia, nombre, fecha_entrega, cantidad))
-    def nuevo_pedido(self):
-        cliente = input("Introduce el nombre del cliente: ")
-        producto = input("Introduce el nombre del producto: ")
-        cantidad = input("Introduce la cantidad: ")
-        self.pedidos_pendientes.append({"cliente": cliente, "producto": producto, "cantidad": cantidad})
-        print("Pedido creado correctamente")
+    def nuevo_pedido(self, producto, cantidad):
+        pedido = {"producto": producto, "cantidad": cantidad}
+        self.pedidos_pendientes.append(pedido)
+        print("Pedido agregado con éxito")
+
 
     def editar_pedido(self, event):
         """Abre la ventana de edición del pedido seleccionado al hacer doble clic en él."""
