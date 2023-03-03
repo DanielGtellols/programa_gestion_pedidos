@@ -142,85 +142,85 @@ class ProgramaGestionPedidos:
         ttk.Button(cuadro_botones, text="Guardar cambios", command=self.guardar_cambios_pedido).pack(side=LEFT, padx=5)
         ttk.Button(cuadro_botones, text="Cancelar", command=self.ventana_editar_pedido.destroy).pack(side=LEFT, padx=5)
 
-  def guardar_cambios_pedido(self):
-     """Guarda los cambios realizados en un pedido existente."""
-       referencia = self.referencia_pedido.get()
-       nombre = self.nombre_pedido.get()
-       fecha_entrega = self.fecha_entrega_pedido.get()
-       cantidad = self.cantidad_pedido.get()
+   def guardar_cambios_pedido(self):
+      """Guarda los cambios realizados en un pedido existente."""
+        referencia = self.referencia_pedido.get()
+        nombre = self.nombre_pedido.get()
+        fecha_entrega = self.fecha_entrega_pedido.get()
+        cantidad = self.cantidad_pedido.get()
 
-       # Se validan los datos del formulario.
-       if not referencia or not nombre or not fecha_entrega or not cantidad:
-        messagebox.showwarning("Error", "Debe completar todos los campos del formulario.")
-        else:
-            try:
-                fecha_entrega = datetime.strptime(fecha_entrega, "%d/%m/%Y").strftime("%d/%m/%Y")
-                cantidad = int(cantidad)
-               if cantidad <= 0:
-                    raise ValueError
-            except ValueError:
-                messagebox.showwarning("Error", "La cantidad debe ser un número entero mayor que cero.")
-            else:
-                # Se actualiza el pedido en la lista de pedidos.
-                id_pedido = self.obtener_id_pedido_seleccionado()
-                self.pedidos[id_pedido] = (referencia, nombre, fecha_entrega, cantidad)
+        # Se validan los datos del formulario.
+        if not referencia or not nombre or not fecha_entrega or not cantidad:
+         messagebox.showwarning("Error", "Debe completar todos los campos del formulario.")
+         else:
+             try:
+                 fecha_entrega = datetime.strptime(fecha_entrega, "%d/%m/%Y").strftime("%d/%m/%Y")
+                 cantidad = int(cantidad)
+                if cantidad <= 0:
+                     raise ValueError
+             except ValueError:
+                 messagebox.showwarning("Error", "La cantidad debe ser un número entero mayor que cero.")
+             else:
+                 # Se actualiza el pedido en la lista de pedidos.
+                 id_pedido = self.obtener_id_pedido_seleccionado()
+                 self.pedidos[id_pedido] = (referencia, nombre, fecha_entrega, cantidad)
 
-                # Se actualiza la tabla de pedidos.
-                self.cargar_tabla_pedidos()
+                 # Se actualiza la tabla de pedidos.
+                 self.cargar_tabla_pedidos()
 
-                # Se cierra la ventana de edición.
-                self.ventana_editar_pedido.destroy()
+                 # Se cierra la ventana de edición.
+                 self.ventana_editar_pedido.destroy()
 
-                # Se muestra un mensaje de éxito.
-                messagebox.showinfo("Éxito", "El pedido ha sido actualizado correctamente.")
- def eliminar_pedido(self):
-    """Elimina un pedido de la lista de pedidos."""
-    id_pedido = self.obtener_id_pedido_seleccionado()
-    if id_pedido is not None:
-        respuesta = messagebox.askyesno("Confirmar eliminación", "¿Está seguro de que desea eliminar el pedido seleccionado?")
-        if respuesta == YES:
-            del self.pedidos[id_pedido]
-            self.cargar_tabla_pedidos()
-            messagebox.showinfo("Éxito", "El pedido ha sido eliminado correctamente.")
-    else:
-        messagebox.showwarning("Error", "Debe seleccionar un pedido para eliminar.")
+                 # Se muestra un mensaje de éxito.
+                 messagebox.showinfo("Éxito", "El pedido ha sido actualizado correctamente.")
+     def eliminar_pedido(self):
+      """Elimina un pedido de la lista de pedidos."""
+     id_pedido = self.obtener_id_pedido_seleccionado()
+     if id_pedido is not None:
+         respuesta = messagebox.askyesno("Confirmar eliminación", "¿Está seguro de que desea eliminar el pedido seleccionado?")
+         if respuesta == YES:
+             del self.pedidos[id_pedido]
+             self.cargar_tabla_pedidos()
+             messagebox.showinfo("Éxito", "El pedido ha sido eliminado correctamente.")
+     else:
+         messagebox.showwarning("Error", "Debe seleccionar un pedido para eliminar.")
         
-def guardar_pedidos(self):
-    """Guarda los datos de los pedidos en un archivo de texto."""
-    with open("pedidos.txt", "w") as archivo:
-        for pedido in self.pedidos:
-            referencia, nombre, fecha_entrega, cantidad = pedido
-            archivo.write(f"{referencia},{nombre},{fecha_entrega},{cantidad}\n")
-    messagebox.showinfo("Éxito", "Los pedidos han sido guardados correctamente.")
+   def guardar_pedidos(self):
+     """Guarda los datos de los pedidos en un archivo de texto."""
+     with open("pedidos.txt", "w") as archivo:
+         for pedido in self.pedidos:
+             referencia, nombre, fecha_entrega, cantidad = pedido
+             archivo.write(f"{referencia},{nombre},{fecha_entrega},{cantidad}\n")
+     messagebox.showinfo("Éxito", "Los pedidos han sido guardados correctamente.")
     
-def cargar_pedidos(self):
-    """Carga los datos de los pedidos desde un archivo de texto."""
-    try:
-        with open("pedidos.txt", "r") as archivo:
-            for linea in archivo:
-                referencia, nombre, fecha_entrega, cantidad = linea.strip().split(",")
-                self.pedidos.append((referencia, nombre, fecha_entrega, int(cantidad)))
-    except FileNotFoundError:
-        pass
+    def cargar_pedidos(self):
+      """Carga los datos de los pedidos desde un archivo de texto."""
+      try:
+          with open("pedidos.txt", "r") as archivo:
+              for linea in archivo:
+                  referencia, nombre, fecha_entrega, cantidad = linea.strip().split(",")
+                  self.pedidos.append((referencia, nombre, fecha_entrega, int(cantidad)))
+     except FileNotFoundError:
+          pass
         
-    self.cargar_tabla_pedidos()
+      self.cargar_tabla_pedidos()
 
-def ordenar_por_fecha(self):
-    """Ordena la tabla de pedidos por fecha de entrega."""
-    pedidos_ordenados = sorted(self.pedidos, key=lambda x: datetime.strptime(x[2], "%d/%m/%Y"))
-    self.pedidos = pedidos_ordenados
-    self.cargar_tabla_pedidos()
+    def ordenar_por_fecha(self):
+     """Ordena la tabla de pedidos por fecha de entrega."""
+     pedidos_ordenados = sorted(self.pedidos, key=lambda x: datetime.strptime(x[2], "%d/%m/%Y"))
+     self.pedidos = pedidos_ordenados
+     self.cargar_tabla_pedidos()
 
-def editar_pedido(self, event=None):
-    """Abre la ventana de edición del pedido seleccionado al hacer doble clic en la tabla de pedidos."""
-    id_pedido = self.obtener_id_pedido_seleccionado()
-    if id_pedido is not None:
-        pedido = self.pedidos[id_pedido]
-        referencia, nombre, fecha_entrega, cantidad = pedido
+    def editar_pedido(self, event=None):
+      """Abre la ventana de edición del pedido seleccionado al hacer doble clic en la tabla de pedidos."""
+      id_pedido = self.obtener_id_pedido_seleccionado()
+      if id_pedido is not None:
+         pedido = self.pedidos[id_pedido]
+         referencia, nombre, fecha_entrega, cantidad = pedido
         
-        self.ventana_editar_pedido = Toplevel()
-        self.ventana_editar_pedido.title("Editar pedido")
-        self.ventana_editar_pedido.resizable(False, False)
+         self.ventana_editar_pedido = Toplevel()
+         self.ventana_editar_pedido.title("Editar pedido")
+         self.ventana_editar_pedido.resizable(False, False)
         
         # Se define el cuadro de referencia del pedido.
         cuadro_referencia = ttk.Frame(self.ventana_editar_pedido)
