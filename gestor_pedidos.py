@@ -101,9 +101,9 @@ class ProgramaGestionPedidos:
     def nuevo_pedido(self, nombre, producto, cantidad):
         print("\nAñadir pedido\n")
         producto = input("Nombre del producto: ")
-        cantidad = input("Cantidad: ")
+        return int(input("Introduce la cantidad de {} que deseas añadir al pedido: ".format(nombre_producto)))
         try:
-           int(cantidad)
+           cantidad = self.nuevo_pedido(nombre_producto)
         except ValueError:
             print("La cantidad debe ser un número entero.")
             return
