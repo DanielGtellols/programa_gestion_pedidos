@@ -142,6 +142,21 @@ class ProgramaGestionPedidos:
         cantidad = ''
         ttk.Button(cuadro_botones, text="Guardar cambios", command=self.guardar_cambios_pedido).pack(side=LEFT, padx=5)
         ttk.Button(cuadro_botones, text="Cancelar", command=self.ventana_editar_pedido.destroy).pack(side=LEFT, padx=5)
+   
+    def nuevo_pedido(self):
+        """Crea un nuevo pedido en el sistema."""
+
+        # Pide al usuario los datos del pedido
+        cliente = input("Cliente: ")
+        fecha = input("Fecha (dd/mm/aaaa): ")
+        descripcion = input("Descripción: ")
+        cantidad = input("Cantidad: ")
+        precio = input("Precio unitario: ")
+
+        # Crea el nuevo pedido y lo añade al sistema
+        pedido = Pedido(cliente, fecha, descripcion, cantidad, precio)
+        self.pedidos.append(pedido)
+        print("Pedido creado con éxito.\n")
 
     def guardar_cambios_pedido(self):
         """Guarda los cambios realizados en un pedido en la lista y en el archivo."""
