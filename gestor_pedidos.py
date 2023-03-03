@@ -119,6 +119,8 @@ class ProgramaGestionPedidos:
         # Se define el cuadro de nombre del pedido.
         cuadro_nombre = ttk.Frame(self.ventana_editar_pedido)
         cuadro_nombre.pack(fill=X, padx=10, pady=5)
-        ttk.Label(cuadro_nombre, text="Nombre:", width=
+        ttk.Label(cuadro_nombre, text="Nombre:", width=40).pack(side=LEFT)
+        self.nombre_pedido = ttk.Entry(cuadro_nombre, width=30)
+        self.nombre_pedido.pack(side=LEFT, padx=5)
 
 
