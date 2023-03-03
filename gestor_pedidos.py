@@ -142,21 +142,30 @@ class ProgramaGestionPedidos:
         cantidad = ''
         ttk.Button(cuadro_botones, text="Guardar cambios", command=self.guardar_cambios_pedido).pack(side=LEFT, padx=5)
         ttk.Button(cuadro_botones, text="Cancelar", command=self.ventana_editar_pedido.destroy).pack(side=LEFT, padx=5)
-   
     def nuevo_pedido(self):
-        """Crea un nuevo pedido en el sistema."""
+        """Crea un nuevo pedido y lo agrega a la lista de pedidos."""
+        nombre = input('Introduce el nombre del cliente: ')
+        direccion = input('Introduce la dirección de entrega: ')
+        articulos = []
+        while True:
+            nombre_articulo = input('Introduce el nombre del artículo (o "fin" para salir): ')
+            if nombre_articulo == 'fin':
+                break
+            cantidad = input('Introduce la cantidad de "{}": '.format(nombre_articulo))
+            precio = input('Introduce el precio unitario de "{}": '.format(nombre_articulo))
+            articulo = Articulo(nombre_articulo, int(cantidad), float(precio))
+            articulos.append(articulo)
+        pedido = Pedido(nombre, direccion, articulos)
+        self.lista_pedidos.append(pedido)
+        print('Se ha añadido el pedido correctamente.')
 
-        # Pide al usuario los datos del pedido
-        cliente = input("Cliente: ")
-        fecha = input("Fecha (dd/mm/aaaa): ")
-        descripcion = input("Descripción: ")
-        cantidad = input("Cantidad: ")
-        precio = input("Precio unitario: ")
-
-        # Crea el nuevo pedido y lo añade al sistema
-        pedido = Pedido(cliente, fecha, descripcion, cantidad, precio)
-        self.pedidos.append(pedido)
-        print("Pedido creado con éxito.\n")
+        # Función para mostrar los pedidos pendientes
+    def mostrar_pedidos_pendientes(self):
+        """Muestra los pedidos pendientes."""
+        print('Pedidos pendientes:')
+        for pedido in self.lista_pedidos:
+            if pedido.estado == 'pendiente':
+                print(pedido)
 
     def guardar_cambios_pedido(self):
         """Guarda los cambios realizados en un pedido en la lista y en el archivo."""
