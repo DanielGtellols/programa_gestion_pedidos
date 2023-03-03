@@ -98,10 +98,19 @@ class ProgramaGestionPedidos:
         for id_pedido, pedido in self.pedidos.items():
             referencia, nombre, fecha_entrega, cantidad = pedido
             self.tabla_pedidos.insert("", END, text=id_pedido, values=(referencia, nombre, fecha_entrega, cantidad))
-    def nuevo_pedido(self, producto, cantidad):
-        pedido = {"producto": producto, "cantidad": cantidad}
-        self.pedidos_pendientes.append(pedido)
-        print("Pedido agregado con éxito")
+    def nuevo_pedido(self, nombre, producto, cantidad):
+        print("\nAñadir pedido\n")
+        producto = input("Nombre del producto: ")
+        cantidad = input("Cantidad: ")
+        try:
+           int(cantidad)
+        except ValueError:
+            print("La cantidad debe ser un número entero.")
+            return
+        cliente = input("Nombre del cliente: ")
+        self.pedidos.append(Pedido(producto, int(cantidad), cliente))
+        print("Pedido añadido correctamente.\n")
+
 
 
     def editar_pedido(self, event):
@@ -180,6 +189,7 @@ class ProgramaGestionPedidos:
         nombre = self.entry_nombre.get().strip()
         fecha_entrega = self.calendario.get_date().strftime("%d/%m/%Y")
         cantidad = self.entry_cantidad.get().strip()
+        self.nuevo_pedido(nombre, producto, cantidad)
 
         # Validación de datos.
         if not referencia or not nombre or not fecha_entrega or not cantidad:
