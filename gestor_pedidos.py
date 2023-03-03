@@ -139,6 +139,7 @@ class ProgramaGestionPedidos:
         # Se definen los botones de guardar y cancelar cambios.
         cuadro_botones = ttk.Frame(self.ventana_editar_pedido)
         cuadro_botones.pack(fill=X, padx=10, pady=10)
+        cantidad = ''
         ttk.Button(cuadro_botones, text="Guardar cambios", command=self.guardar_cambios_pedido).pack(side=LEFT, padx=5)
         ttk.Button(cuadro_botones, text="Cancelar", command=self.ventana_editar_pedido.destroy).pack(side=LEFT, padx=5)
 
@@ -158,7 +159,7 @@ class ProgramaGestionPedidos:
         int(cantidad)
     except ValueError:
         messagebox.showerror("Error", "La cantidad debe ser un número entero.")
-        return
+        # return
 
     # Actualización de los datos del pedido.
     self.pedidos[id_pedido] = (referencia, nombre, fecha_entrega, cantidad)
