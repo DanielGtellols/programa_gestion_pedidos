@@ -142,37 +142,38 @@ class ProgramaGestionPedidos:
         ttk.Button(cuadro_botones, text="Guardar cambios", command=self.guardar_cambios_pedido).pack(side=LEFT, padx=5)
         ttk.Button(cuadro_botones, text="Cancelar", command=self.ventana_editar_pedido.destroy).pack(side=LEFT, padx=5)
 
-   def guardar_cambios_pedido(self):
-      """Guarda los cambios realizados en un pedido existente."""
-        referencia = self.referencia_pedido.get()
-        nombre = self.nombre_pedido.get()
-        fecha_entrega = self.fecha_entrega_pedido.get()
-        cantidad = self.cantidad_pedido.get()
+  def guardar_cambios_pedido(self):
+    """Guarda los cambios realizados en un pedido en la lista y en el archivo."""
+    id_pedido = self.id_pedido_seleccionado.get()
+    referencia = self.entry_referencia.get().strip()
+    nombre = self.entry_nombre.get().strip()
+    fecha_entrega = self.calendario.get_date().strftime("%d/%m/%Y")
+    cantidad = self.entry_cantidad.get().strip()
 
-        # Se validan los datos del formulario.
-        if not referencia or not nombre or not fecha_entrega or not cantidad:
-         messagebox.showwarning("Error", "Debe completar todos los campos del formulario.")
-         else:
-             try:
-                 fecha_entrega = datetime.strptime(fecha_entrega, "%d/%m/%Y").strftime("%d/%m/%Y")
-                 cantidad = int(cantidad)
-                if cantidad <= 0:
-                     raise ValueError
-             except ValueError:
-                 messagebox.showwarning("Error", "La cantidad debe ser un número entero mayor que cero.")
-             else:
-                 # Se actualiza el pedido en la lista de pedidos.
-                 id_pedido = self.obtener_id_pedido_seleccionado()
-                 self.pedidos[id_pedido] = (referencia, nombre, fecha_entrega, cantidad)
+    # Validación de datos.
+    if not referencia or not nombre or not fecha_entrega or not cantidad:
+        messagebox.showerror("Error", "Todos los campos son obligatorios.")
+        return
+    try:
+        int(cantidad)
+    except ValueError:
+        messagebox.showerror("Error", "La cantidad debe ser un número entero.")
+        return
 
-                 # Se actualiza la tabla de pedidos.
-                 self.cargar_tabla_pedidos()
+    # Actualización de los datos del pedido.
+    self.pedidos[id_pedido] = (referencia, nombre, fecha_entrega, cantidad)
+    self.cargar_tabla_pedidos()
+    self.ventana_editar_pedido.destroy()
 
-                 # Se cierra la ventana de edición.
-                 self.ventana_editar_pedido.destroy()
+    # Guardado de los datos en el archivo.
+    try:
+        with open("pedidos.txt", "w") as archivo:
+            for pedido in self.pedidos:
+                archivo.write(f"{pedido[0]};{pedido[1]};{pedido[2]};{pedido[3]}\n")
+        messagebox.showinfo("Éxito", "El pedido ha sido actualizado correctamente.")
+    except IOError:
+        messagebox.showerror("Error", "No se ha podido guardar el pedido en el archivo.")
 
-                 # Se muestra un mensaje de éxito.
-                 messagebox.showinfo("Éxito", "El pedido ha sido actualizado correctamente.")
      def eliminar_pedido(self):
       """Elimina un pedido de la lista de pedidos."""
      id_pedido = self.obtener_id_pedido_seleccionado()
