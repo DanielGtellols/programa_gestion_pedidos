@@ -349,7 +349,78 @@ def guardar_pedido(self, id_pedido, referencia, nombre, fecha_entrega, cantidad)
         cuadro_cantidad = ttk.Frame(self.ventana_editar_pedido)
         cuadro_cantidad.pack(fill=X, padx=10, pady=5)
         ttk.Label(cuadro_cantidad, text="Cantidad:", width=15, anchor=E).pack(side=LEFT)
-           
+        # Se define el campo de cantidad del pedido.
+        entry_cantidad = ttk.Entry(cuadro_cantidad, width=50)
+        entry_cantidad.pack(side=LEFT)
+
+        # Se establece el valor del campo cantidad.
+        if id_pedido is not None:
+            entry_cantidad.insert(0, self.pedidos[id_pedido][3])
+
+        # Se define el cuadro de botones de la ventana de edición.
+        cuadro_botones = ttk.Frame(self.ventana_editar_pedido)
+        cuadro_botones.pack(fill=X, padx=10, pady=5)
+
+        # Se define el botón para guardar los cambios del pedido.
+        boton_guardar = ttk.Button(cuadro_botones, text="Guardar", command=self.guardar_pedido)
+        boton_guardar.pack(side=LEFT, padx=5)
+
+        # Se define el botón para cancelar los cambios del pedido.
+        boton_cancelar = ttk.Button(cuadro_botones, text="Cancelar", command=self.ventana_editar_pedido.destroy)
+        boton_cancelar.pack(side=LEFT, padx=5)
+
+    def eliminar_pedido(self):
+        """Elimina un pedido de la lista de pedidos."""
+        id_pedido = self.obtener_id_pedido_seleccionado()
+        if id_pedido is not None:
+            respuesta = messagebox.askyesno("Confirmar eliminación", "¿Está seguro de que desea eliminar el pedido seleccionado?")
+            if respuesta == YES:
+                del self.pedidos[id_pedido]
+                self.cargar_tabla_pedidos()
+                messagebox.showinfo("Éxito", "El pedido ha sido eliminado correctamente.")
+        else:
+            messagebox.showerror("Error", "Debe seleccionar un pedido para poder eliminarlo.")
+
+    def guardar_pedido(self):
+        """Guarda un pedido en la lista de pedidos."""
+        # Se obtienen los datos del pedido de los campos de la ventana de edición.
+        referencia = self.entry_referencia.get()
+        nombre = self.entry_nombre.get()
+        fecha_entrega = self.entry_fecha_entrega.get()
+        cantidad = self.entry_cantidad.get()
+
+        # Se valida que los campos no estén vacíos.
+        if referencia == "" or nombre == "" or fecha_entrega == "" or cantidad == "":
+            messagebox.showerror("Error", "Debe completar todos los campos para poder guardar el pedido.")
+        else:
+            # Se convierte la cantidad a un número entero.
+            cantidad = int(cantidad)
+
+            # Se obtiene el id del pedido seleccionado.
+            id_pedido = self.obtener_id_pedido_seleccionado()
+
+            if id_pedido is None:
+                # Si no hay un pedido seleccionado, se crea uno nuevo.
+                self.pedidos.append((referencia, nombre, fecha_entrega, cantidad))
+                messagebox.showinfo("Éxito", "El pedido ha sido agregado correctamente.")
+            else:
+                # Si hay un pedido seleccionado, se actualiza.
+                self.pedidos[id_pedido] = (referencia, nombre, fecha_entrega, cantidad)
+                messagebox.showinfo("Éxito", "El pedido ha sido actualizado correctamente.")
+
+            # Se actualiza la tabla de pedidos.
+            self.cargar_tabla_pedidos()
+
+            # Se cierra la ventana de edición.
+            self.ventana_editar_pedido.destroy()
+
+    def guardar_datos(self):
+        """Guarda los datos de los pedidos en un archivo de texto."""
+        try:
+            with open("pedidos.txt", "w") as archivo:
+                for pedido in self.pedidos:
+                    archivo.write(f"{pedido[0]},{pedido[1]},{pedido[2]},{pedido[3
+   
 
                
   
