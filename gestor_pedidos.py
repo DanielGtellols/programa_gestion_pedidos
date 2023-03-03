@@ -300,8 +300,56 @@ def guardar_pedido(self, id_pedido, referencia, nombre, fecha_entrega, cantidad)
             # Se muestra un mensaje de éxito.
             messagebox.showinfo("Éxito", "El pedido ha sido actualizado correctamente.")
 
-def guardar_datos(self):
-    """Guarda los datos de los pedidos en un archivo
+ def guardar_datos(self):
+        """Guarda los datos de los pedidos en un archivo de texto."""
+        filename = filedialog.asksaveasfilename(defaultextension=".txt", filetypes=[("Archivo de texto", "*.txt")])
+        if filename:
+            with open(filename, "w") as f:
+                for pedido in self.pedidos:
+                    f.write(f"{pedido[0]},{pedido[1]},{pedido[2]},{pedido[3]}\n")
+            messagebox.showinfo("Éxito", f"Los datos de los pedidos han sido guardados en el archivo {filename}.")
+    def cargar_tabla_pedidos(self):
+        """Carga los datos de los pedidos en la tabla de pedidos."""
+        for row in self.tabla_pedidos.get_children():
+            self.tabla_pedidos.delete(row)
+
+        for i, pedido in enumerate(self.pedidos):
+            self.tabla_pedidos.insert("", "end", iid=i, values=pedido)
+        
+        self.tabla_pedidos.bind("<Double-1>", self.editar_pedido)
+    
+    def editar_pedido(self, event):
+        """Abre una ventana para editar el pedido seleccionado."""
+        item = self.tabla_pedidos.selection()[0]
+        id_pedido = int(item)
+        pedido = self.pedidos[id_pedido]
+
+        self.ventana_editar_pedido = Toplevel(self.ventana_principal)
+        self.ventana_editar_pedido.title("Editar pedido")
+        self.ventana_editar_pedido.geometry("400x250")
+        self.ventana_editar_pedido.resizable(False, False)
+
+        # Se define el cuadro de nombre del pedido.
+        cuadro_nombre = ttk.Frame(self.ventana_editar_pedido)
+        cuadro_nombre.pack(fill=X, padx=10, pady=5)
+        ttk.Label(cuadro_nombre, text="Nombre:", width=15, anchor=E).pack(side=LEFT)
+        entry_nombre = ttk.Entry(cuadro_nombre, width=30)
+        entry_nombre.pack(side=LEFT)
+        entry_nombre.insert(0, pedido[1])
+
+        # Se define el cuadro de fecha de entrega del pedido.
+        cuadro_fecha_entrega = ttk.Frame(self.ventana_editar_pedido)
+        cuadro_fecha_entrega.pack(fill=X, padx=10, pady=5)
+        ttk.Label(cuadro_fecha_entrega, text="Fecha de entrega:", width=15, anchor=E).pack(side=LEFT)
+        entry_fecha_entrega = ttk.Entry(cuadro_fecha_entrega, width=30)
+        entry_fecha_entrega.pack(side=LEFT)
+        entry_fecha_entrega.insert(0, pedido[2])
+
+        # Se define el cuadro de cantidad del pedido.
+        cuadro_cantidad = ttk.Frame(self.ventana_editar_pedido)
+        cuadro_cantidad.pack(fill=X, padx=10, pady=5)
+        ttk.Label(cuadro_cantidad, text="Cantidad:", width=15, anchor=E).pack(side=LEFT)
+           
 
                
   
