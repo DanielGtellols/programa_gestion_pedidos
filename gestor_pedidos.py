@@ -415,11 +415,16 @@ def guardar_pedido(self, id_pedido, referencia, nombre, fecha_entrega, cantidad)
             self.ventana_editar_pedido.destroy()
 
     def guardar_datos(self):
-        """Guarda los datos de los pedidos en un archivo de texto."""
-        try:
-            with open("pedidos.txt", "w") as archivo:
-                for pedido in self.pedidos:
-                    archivo.write(f"{pedido[0]},{pedido[1]},{pedido[2]},{pedido[3
+    """Guarda los datos de los pedidos en un archivo de texto."""
+    try:
+        with open("pedidos.txt", "w") as archivo:
+            for pedido in self.pedidos:
+                linea = f"{pedido[0]},{pedido[1]},{pedido[2]},{pedido[3]}\n"
+                archivo.write(linea)
+        messagebox.showinfo("Éxito", "Los datos han sido guardados correctamente.")
+    except:
+        messagebox.showerror("Error", "Ha ocurrido un error al intentar guardar los datos.")
+
    
 
                
