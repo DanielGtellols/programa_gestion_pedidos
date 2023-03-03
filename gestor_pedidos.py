@@ -8,6 +8,11 @@ class ProgramaGestionPedidos:
         self.ventana = ventana
         self.ventana.title("Gestión de Pedidos")
         self.ventana.geometry("800x600")
+        self.lista_pedidos = []
+        self.opcion = None
+        self.cliente = None
+        self.producto = None
+        self.cantidad = None # Definimos el atributo cantidad
 
         # Se define el cuadro de nombre del pedido.
         cuadro_referencia = Frame(self.ventana)
@@ -98,19 +103,12 @@ class ProgramaGestionPedidos:
         for id_pedido, pedido in self.pedidos.items():
             referencia, nombre, fecha_entrega, cantidad = pedido
             self.tabla_pedidos.insert("", END, text=id_pedido, values=(referencia, nombre, fecha_entrega, cantidad))
-    def nuevo_pedido(self, nombre, producto, cantidad):
-        print("\nAñadir pedido\n")
-        producto = input("Nombre del producto: ")
-        return int(input("Introduce la cantidad de {} que deseas añadir al pedido: ".format(nombre_producto)))
-        try:
-           cantidad = self.nuevo_pedido(nombre_producto)
-        except ValueError:
-            print("La cantidad debe ser un número entero.")
-            return
-        cliente = input("Nombre del cliente: ")
-        self.pedidos.append(Pedido(producto, int(cantidad), cliente))
-        print("Pedido añadido correctamente.\n")
-
+    def nuevo_pedido(self):
+        self.cliente = input("Introduce el nombre del cliente: ")
+        self.producto = input("Introduce el nombre del producto: ")
+        self.cantidad = input("Introduce la cantidad: ")
+        self.lista_pedidos.append((self.cliente, self.producto, self.cantidad))
+        print("Pedido añadido correctamente.")
 
 
     def editar_pedido(self, event):
@@ -173,6 +171,7 @@ class ProgramaGestionPedidos:
         pedido = Pedido(nombre, direccion, articulos)
         self.lista_pedidos.append(pedido)
         print('Se ha añadido el pedido correctamente.')
+        cantidad = input("Introduce la cantidad: ")
 
         # Función para mostrar los pedidos pendientes
     def mostrar_pedidos_pendientes(self):
