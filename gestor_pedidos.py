@@ -189,7 +189,7 @@ class ProgramaGestionPedidos:
         fecha_entrega = self.calendario.get_date().strftime("%d/%m/%Y")
         cantidad = self.entry_cantidad.get().strip()
         self.nuevo_pedido(nombre, producto, cantidad)
-
+             
         # Validación de datos.
         if not referencia or not nombre or not fecha_entrega or not cantidad:
            messagebox.showerror("Error", "Todos los campos son obligatorios.")
